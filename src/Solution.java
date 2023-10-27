@@ -27,7 +27,7 @@ public class Solution {
     public static ArrayList<Product> getProductsByPrice() throws SQLException {
         ArrayList<Product> products = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT NAME FROM product WHERE PRICE >= 100;");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE PRICE >= 100");
             while (resultSet.next()) {
                 long productID = resultSet.getLong("ID");
                 String productName = resultSet.getString("NAME");
@@ -43,7 +43,7 @@ public class Solution {
     public static ArrayList<Product> getProductsByDescription() throws SQLException {
         ArrayList<Product> products = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT NAME FROM product WHERE LENGTH(DESCRIPTION) > 50;");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE LENGTH(DESCRIPTION) > 50");
             while (resultSet.next()) {
                 long productID = resultSet.getLong("ID");
                 String productName = resultSet.getString("NAME");
