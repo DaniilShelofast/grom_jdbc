@@ -1,3 +1,5 @@
+package teaching_jdbc;
+
 import java.sql.*;
 
 public class lesson3 {
