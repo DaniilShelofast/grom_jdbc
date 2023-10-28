@@ -7,17 +7,6 @@ public class Solution {
     static String password = "Password";
     static String connectionUrl = "jdbc:mysql://localhost:3306/test";
 
-    public static void main(String[] args) throws Exception {
-        String userName = "root";
-        String password = "Password";
-        String connectionUrl = "jdbc:mysql://localhost:3306/test";
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password)) {
-            changeDescription();
-
-        }
-    }
-
 
     public static ArrayList<Product> getAllProducts() throws SQLException {
         ArrayList<Product> products = new ArrayList<>();
@@ -75,7 +64,7 @@ public class Solution {
 
     public static void changeDescription() throws SQLException {
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            PreparedStatement select = connection.prepareStatement("SELECT ID, DESCRIPTION FROM product WHERE LENGTH(DESCRIPTION) > 5;");
+            PreparedStatement select = connection.prepareStatement("SELECT ID, DESCRIPTION FROM product WHERE LENGTH(DESCRIPTION) > 100;");
             ResultSet resultSet = select.executeQuery();
             PreparedStatement update = connection.prepareStatement("UPDATE product SET DESCRIPTION = ? WHERE ID = ?");
             while (resultSet.next()) {
