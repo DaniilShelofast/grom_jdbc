@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Solution {
 
@@ -8,8 +9,8 @@ public class Solution {
     static String connectionUrl = "jdbc:mysql://localhost:3306/test";
 
 
-    public static ArrayList<Product> getAllProducts() throws SQLException {
-        ArrayList<Product> products = new ArrayList<>();
+    public static LinkedList<Product> getAllProducts() throws SQLException {
+        LinkedList<Product> products = new LinkedList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("select * from Product");
             while (resultSet.next()) {
@@ -63,7 +64,7 @@ public class Solution {
     }
 
     public static void changeDescription() throws SQLException {
-        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password)) {
             PreparedStatement select = connection.prepareStatement("SELECT ID, DESCRIPTION FROM product WHERE LENGTH(DESCRIPTION) > 100;");
             ResultSet resultSet = select.executeQuery();
             PreparedStatement update = connection.prepareStatement("UPDATE product SET DESCRIPTION = ? WHERE ID = ?");
@@ -76,11 +77,11 @@ public class Solution {
                     int index = words.length - 1;
                     words[index] = "";
                     StringBuilder stringBuilder = new StringBuilder();
-                    for (String word : words) {
+                    for (String s : words) {
                         if (stringBuilder.length() > 0) {
                             stringBuilder.append(".");
                         }
-                        stringBuilder.append(word);
+                        stringBuilder.append(s);
                     }
                     description = stringBuilder.toString();
 
