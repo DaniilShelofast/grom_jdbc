@@ -17,7 +17,7 @@ public class Solution {
     }
 
 
-    public static LinkedList<Product> getAllProducts() throws SQLException {
+    public static LinkedList<Product> getAllProducts() throws Exception {
         LinkedList<Product> products = new LinkedList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("select * from Product");
@@ -33,7 +33,7 @@ public class Solution {
         return products;
     }
 
-    public static ArrayList<Product> getProductsByPrice() throws SQLException {
+    public static ArrayList<Product> getProductsByPrice() throws Exception {
         ArrayList<Product> products = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE PRICE >= 100");
@@ -49,7 +49,7 @@ public class Solution {
         return products;
     }
 
-    public static ArrayList<Product> getProductsByDescription() throws SQLException {
+    public static ArrayList<Product> getProductsByDescription() throws Exception {
         ArrayList<Product> products = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE LENGTH(DESCRIPTION) > 50");
@@ -65,13 +65,13 @@ public class Solution {
         return products;
     }
 
-    public static void increasePrice() throws SQLException {
+    public static void increasePrice() throws Exception {
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
             statement.executeUpdate("UPDATE product SET price = price + 100 WHERE price < 970;");
         }
     }
 
-    public static void changeDescription() throws SQLException {
+    public static void changeDescription() throws Exception {
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password)) {
             PreparedStatement select = connection.prepareStatement("SELECT ID, DESCRIPTION FROM product WHERE LENGTH(DESCRIPTION) > 100;");
             ResultSet resultSet = select.executeQuery();
@@ -102,7 +102,7 @@ public class Solution {
     }
 
 
-    public static LinkedList<Product> findProductsWithEmptyDescription() throws SQLException {
+    public static LinkedList<Product> findProductsWithEmptyDescription() throws Exception {
         LinkedList<Product> products = new LinkedList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE DESCRIPTION IS NULL OR DESCRIPTION = '';");
