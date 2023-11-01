@@ -7,16 +7,6 @@ public class Solution {
     static String password = "Password";
     static String connectionUrl = "jdbc:mysql://localhost:3306/test";
 
-
-    public static void main(String[] args) throws Exception {
-        String userName = "root";
-        String password = "Password";
-        String connectionUrl = "jdbc:mysql://localhost:3306/test";
-        Class.forName("com.mysql.cj.jdbc.Driver");
-
-    }
-
-
     public static LinkedList<Product> getAllProducts() throws Exception {
         LinkedList<Product> products = new LinkedList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
