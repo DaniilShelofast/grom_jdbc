@@ -1,12 +1,20 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
 public class Solution {
 
     static String userName = "root";
     static String password = "Password";
     static String connectionUrl = "jdbc:mysql://localhost:3306/test";
+
+
+    public static void main(String[] args) throws Exception {
+        String userName = "root";
+        String password = "Password";
+        String connectionUrl = "jdbc:mysql://localhost:3306/test";
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+    }
 
 
     public static LinkedList<Product> getAllProducts() throws SQLException {
@@ -92,4 +100,61 @@ public class Solution {
             }
         }
     }
+
+
+    public static LinkedList<Product> findProductsWithEmptyDescription() throws SQLException {
+        LinkedList<Product> products = new LinkedList<>();
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE DESCRIPTION IS NULL OR DESCRIPTION = '';");
+            while (resultSet.next()) {
+                long productID = resultSet.getLong("ID");
+                String productName = resultSet.getString("NAME");
+                String productDescription = resultSet.getString("DESCRIPTION");
+                int productPrice = resultSet.getInt("PRICE");
+                Product product = new Product(productID, productName, productDescription, productPrice);
+                products.add(product);
+            }
+        }
+        return products;
+    }
+
+    public static LinkedList<Product> findProductsByName(String word) throws Exception {
+
+        if (word.length() < 3 || word.isBlank()) {
+            throw new Exception("Error");
+        }
+
+        LinkedList<Product> products = new LinkedList<>();
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE NAME LIKE '%word%';");
+            while (resultSet.next()) {
+                long productID = resultSet.getLong("ID");
+                String productName = resultSet.getString("NAME");
+                String productDescription = resultSet.getString("DESCRIPTION");
+                int productPrice = resultSet.getInt("PRICE");
+                Product product = new Product(productID, productName, productDescription, productPrice);
+                products.add(product);
+            }
+        }
+        return products;
+    }
+
+    public static LinkedList<Product> findProductsByPrice(int price, int delta) throws Exception {
+        LinkedList<Product> products = new LinkedList<>();
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM PRODUCT WHERE PRICE BETWEEN ? AND ?")) {
+            preparedStatement.setInt(1, price - delta);
+            preparedStatement.setInt(2, price + delta);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                long productID = resultSet.getLong("ID");
+                String productName = resultSet.getString("NAME");
+                String productDescription = resultSet.getString("DESCRIPTION");
+                int productPrice = resultSet.getInt("PRICE");
+                Product product = new Product(productID, productName, productDescription, productPrice);
+                products.add(product);
+            }
+        }
+        return products;
+    }
 }
+

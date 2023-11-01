@@ -10,7 +10,7 @@ public class ProductDAO {
     public static LinkedList<Product> getProduct() {
         LinkedList<Product> products = new LinkedList<>();
         try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("select * from Product");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Product");
             while (resultSet.next()) {
                 long productID = resultSet.getLong("ID");
                 String productName = resultSet.getString("NAME");
