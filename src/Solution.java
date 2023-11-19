@@ -1,6 +1,8 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Solution {
 
     static String userName = "root";
@@ -9,47 +11,32 @@ public class Solution {
 
     public static LinkedList<Product> getAllProducts() throws Exception {
         LinkedList<Product> products = new LinkedList<>();
-        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("select * from Product");
-            while (resultSet.next()) {
-                long productID = resultSet.getLong("ID");
-                String productName = resultSet.getString("NAME");
-                String productDescription = resultSet.getString("DESCRIPTION");
-                int productPrice = resultSet.getInt("PRICE");
-                Product product = new Product(productID, productName, productDescription, productPrice);
-                products.add(product);
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); PreparedStatement preparedStatement = connection.prepareStatement("select * from product")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet != null && resultSet.next()) {
+                products.add(new Product(resultSet.getLong("ID"), resultSet.getString("NAME"), resultSet.getString("DESCRIPTION"), resultSet.getInt("PRICE")));
             }
         }
         return products;
     }
 
-    public static ArrayList<Product> getProductsByPrice() throws Exception {
-        ArrayList<Product> products = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE PRICE >= 100");
-            while (resultSet.next()) {
-                long productID = resultSet.getLong("ID");
-                String productName = resultSet.getString("NAME");
-                String productDescription = resultSet.getString("DESCRIPTION");
-                int productPrice = resultSet.getInt("PRICE");
-                Product product = new Product(productID, productName, productDescription, productPrice);
-                products.add(product);
+    public static LinkedList<Product> getProductsByPrice() throws Exception {
+        LinkedList<Product> products = new LinkedList<>();
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM product WHERE PRICE >= 100")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet != null && resultSet.next()) {
+                products.add(new Product(resultSet.getLong("ID"), resultSet.getString("NAME"), resultSet.getString("DESCRIPTION"), resultSet.getInt("PRICE")));
             }
         }
         return products;
     }
 
-    public static ArrayList<Product> getProductsByDescription() throws Exception {
-        ArrayList<Product> products = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE LENGTH(DESCRIPTION) > 50");
-            while (resultSet.next()) {
-                long productID = resultSet.getLong("ID");
-                String productName = resultSet.getString("NAME");
-                String productDescription = resultSet.getString("DESCRIPTION");
-                int productPrice = resultSet.getInt("PRICE");
-                Product product = new Product(productID, productName, productDescription, productPrice);
-                products.add(product);
+    public static LinkedList<Product> getProductsByDescription() throws Exception {
+        LinkedList<Product> products = new LinkedList<>();
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM product WHERE LENGTH(DESCRIPTION) > 50")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet != null && resultSet.next()) {
+                products.add(new Product(resultSet.getLong("ID"), resultSet.getString("NAME"), resultSet.getString("DESCRIPTION"), resultSet.getInt("PRICE")));
             }
         }
         return products;
@@ -94,36 +81,25 @@ public class Solution {
 
     public static LinkedList<Product> findProductsWithEmptyDescription() throws Exception {
         LinkedList<Product> products = new LinkedList<>();
-        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE DESCRIPTION IS NULL OR DESCRIPTION = '';");
-            while (resultSet.next()) {
-                long productID = resultSet.getLong("ID");
-                String productName = resultSet.getString("NAME");
-                String productDescription = resultSet.getString("DESCRIPTION");
-                int productPrice = resultSet.getInt("PRICE");
-                Product product = new Product(productID, productName, productDescription, productPrice);
-                products.add(product);
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM product WHERE DESCRIPTION IS NULL OR DESCRIPTION = '';")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet != null && resultSet.next()) {
+                products.add(new Product(resultSet.getLong("ID"), resultSet.getString("NAME"), resultSet.getString("DESCRIPTION"), resultSet.getInt("PRICE")));
             }
         }
         return products;
     }
 
     public static LinkedList<Product> findProductsByName(String word) throws Exception {
-
         if (word.length() < 3 || word.isBlank()) {
             throw new Exception("Error");
         }
 
         LinkedList<Product> products = new LinkedList<>();
-        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM product WHERE NAME LIKE '%word%';");
-            while (resultSet.next()) {
-                long productID = resultSet.getLong("ID");
-                String productName = resultSet.getString("NAME");
-                String productDescription = resultSet.getString("DESCRIPTION");
-                int productPrice = resultSet.getInt("PRICE");
-                Product product = new Product(productID, productName, productDescription, productPrice);
-                products.add(product);
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM product WHERE NAME LIKE '%word%';")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet != null && resultSet.next()) {
+                products.add(new Product(resultSet.getLong("ID"), resultSet.getString("NAME"), resultSet.getString("DESCRIPTION"), resultSet.getInt("PRICE")));
             }
         }
         return products;
@@ -135,16 +111,23 @@ public class Solution {
             preparedStatement.setInt(1, price - delta);
             preparedStatement.setInt(2, price + delta);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                long productID = resultSet.getLong("ID");
-                String productName = resultSet.getString("NAME");
-                String productDescription = resultSet.getString("DESCRIPTION");
-                int productPrice = resultSet.getInt("PRICE");
-                Product product = new Product(productID, productName, productDescription, productPrice);
-                products.add(product);
+            while (resultSet != null && resultSet.next()) {
+                products.add(new Product(resultSet.getLong("ID"), resultSet.getString("NAME"), resultSet.getString("DESCRIPTION"), resultSet.getInt("PRICE")));
             }
         }
         return products;
+    }
+
+    public static void testSavePerformance() throws Exception {
+        try (Connection connection = DriverManager.getConnection(connectionUrl, userName, password); PreparedStatement preparedStatement = connection.prepareStatement("insert into TEST_SPEED (ID, SOME_STRING, SOME_NUMBER) value (?, ?, ?)")) {
+
+            for (long i = 0; i <= 1000; i++) {
+                preparedStatement.setLong(1, ThreadLocalRandom.current().nextLong(1L, Long.MAX_VALUE));
+                preparedStatement.setString(2, "User" + ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE));
+                preparedStatement.setInt(3, ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE));
+                preparedStatement.executeUpdate();
+            }
+        }
     }
 }
 
